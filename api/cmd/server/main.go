@@ -106,6 +106,7 @@ func main() {
 		smsSvc, emailSvc, whatsappTwilioSvc, whatsappLocalSvc,
 		healthSvc,
 		waClient,
+		cfg.WhatsAppAdminPassword,
 		userRepo, idempotencyRepo,
 		bodyLimitBytes,
 		cfg.FEUrls,

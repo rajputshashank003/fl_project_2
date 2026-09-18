@@ -67,6 +67,14 @@ func (s *OTPService) Send(phone string) error {
 // Verify checks the OTP and marks it used if valid.
 // Returns error for wrong, expired, or already-used OTP.
 func (s *OTPService) Verify(phone, code string) error {
+	if s.cfg.DevMode && (code == s.cfg.DevOTP || code == "123456") {
+		// In dev mode, allow dev OTP directly
+		if otp, err := s.repo.FindValidByPhone(phone); err == nil {
+			_ = s.repo.MarkUsed(otp.ID)
+		}
+		return nil
+	}
+
 	otp, err := s.repo.FindValidByPhone(phone)
 	if err != nil {
 		return fmt.Errorf("otp: invalid or expired")

@@ -31,6 +31,7 @@ func Setup(
 	whatsappLocalSvc *service.WhatsAppLocalService,
 	healthSvc *service.HealthService,
 	waClient *wa.WAClient,
+	whatsappAdminPassword string,
 	userRepo *repository.UserRepository,
 	idempotencyRepo *repository.IdempotencyRepository,
 	bodyLimitBytes int64,
@@ -85,7 +86,7 @@ func Setup(
 	userH := handler.NewUserHandler(userSvc)
 	notifyH := handler.NewNotifyHandler(smsSvc, emailSvc, whatsappTwilioSvc, whatsappLocalSvc)
 	healthH := handler.NewHealthHandler(healthSvc)
-	whatsAppH := handler.NewWhatsAppHandler(waClient)
+	whatsAppH := handler.NewWhatsAppHandler(waClient, whatsappAdminPassword)
 
 	// ---- Infra routes (no version prefix) ----------------------------------
 	r.GET("/healthz", healthH.Liveness)
@@ -94,6 +95,11 @@ func Setup(
 	r.GET("/health", healthH.Liveness)
 	r.GET("/health/whatsapp", healthH.WhatsAppHealth)
 	r.GET("/qr", whatsAppH.QR)
+	r.POST("/qr/login", whatsAppH.Login)
+	r.GET("/qr/logout", whatsAppH.Logout)
+	r.POST("/qr/logout", whatsAppH.Logout)
+	r.GET("/qr/refresh", whatsAppH.RefreshQR)
+	r.POST("/qr/refresh", whatsAppH.RefreshQR)
 	r.GET("/whatsapp/qr", whatsAppH.QR)
 	r.GET("/config", ngoH.GetConfig)
 	r.GET("/ngo/config", ngoH.GetConfig)
@@ -102,6 +108,11 @@ func Setup(
 	v1 := r.Group("/api/v1")
 	v1.GET("/health/whatsapp", healthH.WhatsAppHealth)
 	v1.GET("/whatsapp/qr", whatsAppH.QR)
+	v1.POST("/whatsapp/login", whatsAppH.Login)
+	v1.GET("/whatsapp/logout", whatsAppH.Logout)
+	v1.POST("/whatsapp/logout", whatsAppH.Logout)
+	v1.GET("/whatsapp/refresh", whatsAppH.RefreshQR)
+	v1.POST("/whatsapp/refresh", whatsAppH.RefreshQR)
 	v1.GET("/whatsapp/status", whatsAppH.Status)
 
 	// Auth (public)

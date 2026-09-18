@@ -51,10 +51,11 @@ type Config struct {
 	FEUrls     []string // Allowed CORS frontend origins parsed from FE_URLS
 
 	// Messaging
-	MessagingType       string // "sms" | "whatsapp_twilio" | "whatsapp_local"
-	WhatsAppDBPath      string // SQLite session database path (e.g. "store/whatsapp.db")
-	WhatsAppLocalURL    string // (Optional fallback) base URL of standalone whatsapp_service (e.g. "http://localhost:8080")
-	WhatsAppLocalAPIKey string // API key for authenticating with whatsapp_service
+	MessagingType         string // "sms" | "whatsapp_twilio" | "whatsapp_local"
+	WhatsAppDBPath        string // SQLite session database path (e.g. "store/whatsapp.db")
+	WhatsAppLocalURL      string // (Optional fallback) base URL of standalone whatsapp_service (e.g. "http://localhost:8080")
+	WhatsAppLocalAPIKey   string // API key for authenticating with whatsapp_service
+	WhatsAppAdminPassword string // Admin password for /qr access & actions
 
 	// Resend
 	ResendAPIKey    string
@@ -109,10 +110,11 @@ func Load() (*Config, error) {
 		AppBaseURL: getEnv("APP_BASE_URL", "https://ngo.costop.in"),
 		FEUrls:     parseOrigins(getEnv("FE_URLS", "")),
 
-		MessagingType:       getEnv("MESSAGING_TYPE", "sms"),
-		WhatsAppDBPath:      getEnv("WHATSAPP_DB_PATH", "store/whatsapp.db"),
-		WhatsAppLocalURL:    getEnv("WHATSAPP_LOCAL_URL", "http://localhost:8080"),
-		WhatsAppLocalAPIKey: getEnv("WHATSAPP_LOCAL_API_KEY", ""),
+		MessagingType:         getEnv("MESSAGING_TYPE", "sms"),
+		WhatsAppDBPath:        getEnv("WHATSAPP_DB_PATH", "store/whatsapp.db"),
+		WhatsAppLocalURL:      getEnv("WHATSAPP_LOCAL_URL", "http://localhost:8080"),
+		WhatsAppLocalAPIKey:   getEnv("WHATSAPP_LOCAL_API_KEY", ""),
+		WhatsAppAdminPassword: getEnv("WHATSAPP_ADMIN_PASSWORD", ""),
 
 		ResendAPIKey:    getEnv("RESEND_API_KEY", ""),
 		ResendFromEmail: getEnv("RESEND_FROM_EMAIL", "noreply@example.com"),
